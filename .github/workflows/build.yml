@@ -20,7 +20,7 @@ jobs:
         run: rc aes_gcm_dll.rc
       - name: Compile DLL
         run: |
-          cl /LD /I "C:\openssl\build\include" /Fe:aes_gcm.dll aes_gcm_dll.c aes_gcm_dll.res "C:\openssl\build\lib\libcrypto.lib" "C:\openssl\build\lib\libssl.lib" ws2_32.lib advapi32.lib crypt32.lib user32.lib
+          cl /LD /I "C:\openssl\build\include" /Fe:aes_gcm.dll aes_gcm_dll.c aes_gcm_dll.def aes_gcm_dll.res "C:\openssl\build\lib\libcrypto.lib" "C:\openssl\build\lib\libssl.lib" ws2_32.lib advapi32.lib crypt32.lib user32.lib
       - name: Upload DLL
         uses: actions/upload-artifact@v4
         with:
