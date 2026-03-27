@@ -1,4 +1,4 @@
 LIBRARY aes_gcm
 EXPORTS
-    aes_gcm_decrypt
     aes_gcm_encrypt
+    aes_gcm_decrypt
