@@ -21,7 +21,7 @@ __declspec(dllexport) int aes_gcm_decrypt(
     if (!EVP_DecryptInit_ex(ctx, NULL, NULL, (void*)key, (void*)iv)) goto done;
     if (!EVP_DecryptUpdate(ctx, (void*)ct, &len, (void*)ct, ct_len)) goto done;
     if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_TAG, tag_len, (void*)tag)) goto done;
-    if (EVP_DecryptFinal_ex(ctx, (void*)ct + len, &len2) != 1) goto done;
+    if (EVP_DecryptFinal_ex(ctx, (unsigned char*)ct + len, &len2) != 1) goto done;
 
     ret = len + len2;
 
@@ -50,7 +50,7 @@ __declspec(dllexport) int aes_gcm_encrypt(
     if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, iv_len, NULL)) goto done;
     if (!EVP_EncryptInit_ex(ctx, NULL, NULL, (void*)key, (void*)iv)) goto done;
     if (!EVP_EncryptUpdate(ctx, (void*)pt, &len, (void*)pt, pt_len)) goto done;
-    if (!EVP_EncryptFinal_ex(ctx, (void*)pt + len, &len2)) goto done;
+    if (!EVP_EncryptFinal_ex(ctx, (unsigned char*)pt + len, &len2)) goto done;
     if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_GET_TAG, tag_len, (void*)tag)) goto done;
 
     ret = len + len2;
