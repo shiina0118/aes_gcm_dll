@@ -4,3 +4,5 @@ EXPORTS
     aes_256_gcm_decrypt
     aes_128_ctr_encrypt
     aes_128_ctr_decrypt
+    x25519_keypair
+    x25519_shared_secret
