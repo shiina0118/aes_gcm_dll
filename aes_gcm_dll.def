@@ -2,3 +2,5 @@ LIBRARY aes
 EXPORTS
     aes_256_gcm_encrypt
     aes_256_gcm_decrypt
+    aes_128_ctr_encrypt
+    aes_128_ctr_decrypt

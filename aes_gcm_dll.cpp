@@ -67,4 +67,62 @@ done:
     return ret;
 }
 
+/* AES-128-CTR 加密
+ * pt/pt_len=明文, key=16字节, iv=16字节, out=密文输出buffer
+ * 返回: 密文长度, 负数=失败 */
+__declspec(dllexport) int __cdecl aes_128_ctr_encrypt(
+    int pt, int pt_len,
+    int key, int iv, int out
+) {
+    auto _pt  = reinterpret_cast<unsigned char*>(pt);
+    auto _key = reinterpret_cast<unsigned char*>(key);
+    auto _iv  = reinterpret_cast<unsigned char*>(iv);
+    auto _out = reinterpret_cast<unsigned char*>(out);
+
+    EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
+    if (!ctx) return -1;
+
+    int ret = -1, len = 0, len2 = 0;
+
+    if (!EVP_EncryptInit_ex(ctx, EVP_aes_128_ctr(), nullptr, nullptr, nullptr)) goto done;
+    if (!EVP_EncryptInit_ex(ctx, nullptr, nullptr, _key, _iv)) goto done;
+    if (!EVP_EncryptUpdate(ctx, _out, &len, _pt, pt_len)) goto done;
+    if (!EVP_EncryptFinal_ex(ctx, _out + len, &len2)) goto done;
+
+    ret = len + len2;
+
+done:
+    EVP_CIPHER_CTX_free(ctx);
+    return ret;
+}
+
+/* AES-128-CTR 解密
+ * ct/ct_len=密文长度, key=16字节, iv=16字节, out=明文输出buffer
+ * 返回: 明文长度, 负数=失败 */
+__declspec(dllexport) int __cdecl aes_128_ctr_decrypt(
+    int ct, int ct_len,
+    int key, int iv, int out
+) {
+    auto _ct  = reinterpret_cast<unsigned char*>(ct);
+    auto _key = reinterpret_cast<unsigned char*>(key);
+    auto _iv  = reinterpret_cast<unsigned char*>(iv);
+    auto _out = reinterpret_cast<unsigned char*>(out);
+
+    EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
+    if (!ctx) return -1;
+
+    int ret = -1, len = 0, len2 = 0;
+
+    if (!EVP_DecryptInit_ex(ctx, EVP_aes_128_ctr(), nullptr, nullptr, nullptr)) goto done;
+    if (!EVP_DecryptInit_ex(ctx, nullptr, nullptr, _key, _iv)) goto done;
+    if (!EVP_DecryptUpdate(ctx, _out, &len, _ct, ct_len)) goto done;
+    if (!EVP_DecryptFinal_ex(ctx, _out + len, &len2)) goto done;
+
+    ret = len + len2;
+
+done:
+    EVP_CIPHER_CTX_free(ctx);
+    return ret;
+}
+
 } // extern "C"
