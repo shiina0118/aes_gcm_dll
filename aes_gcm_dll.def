@@ -1,0 +1,4 @@
+LIBRARY aes
+EXPORTS
+    aes_256_gcm_encrypt
+    aes_256_gcm_decrypt

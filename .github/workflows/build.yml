@@ -1,0 +1,28 @@
+name: Build DLL
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup MSVC x86
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x86
+      - name: Install OpenSSL
+        run: |
+          git clone --depth 1 https://github.com/openssl/openssl.git C:\openssl
+          cd C:\openssl
+          perl Configure no-shared no-tests --prefix=C:\openssl\build --openssldir=C:\openssl\ssl VC-WIN32
+          nmake
+          nmake install_sw
+      - name: Compile Resource
+        run: rc aes_gcm_dll.rc
+      - name: Compile DLL
+        run: |
+          cl /LD /EHsc /I "C:\openssl\build\include" /Fe:aes.dll aes_gcm_dll.cpp aes_gcm_dll.def aes_gcm_dll.res "C:\openssl\build\lib\libcrypto.lib" "C:\openssl\build\lib\libssl.lib" ws2_32.lib advapi32.lib crypt32.lib user32.lib
+      - name: Upload DLL
+        uses: actions/upload-artifact@v4
+        with:
+          name: aes_gcm_dll
+          path: aes.dll
